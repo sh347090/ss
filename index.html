@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Casino - Premium Gaming</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --gold: #f0c040;
+      --gold-dark: #c49a10;
+      --gold-light: #ffe88a;
+      --bg-dark: #0a0a0f;
+      --bg-card: #12121c;
+      --bg-panel: #1a1a2e;
+      --accent: #e63946;
+      --text: #f0ece0;
+      --text-dim: #8a8070;
+      --border: rgba(240,192,64,0.15);
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg-dark);
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content:'';
+      position:fixed;
+      inset:0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events:none;
+      z-index:0;
+      opacity:0.4;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .logo span {
+      color: var(--accent);
+      -webkit-text-fill-color: var(--accent);
+    }
+    nav { display:flex; gap:1.5rem; align-items:center; }
+    nav a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--gold); }
+    .header-btns { display:flex; gap:0.75rem; align-items:center; }
+    .btn-login {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.5rem 1.25rem;
+      border-radius: 4px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-login:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-join {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border: none;
+      color: #0a0a0f;
+      padding: 0.5rem 1.5rem;
+      border-radius: 4px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-join:hover { 
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(240,192,64,0.3);
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding: 4rem 2rem;
+    }
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: 
+        radial-gradient(ellipse 70% 60% at 70% 50%, rgba(240,192,64,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(230,57,70,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 80% at 50% 0%, rgba(26,26,46,0.8) 0%, transparent 50%);
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image: 
+        linear-gradient(rgba(240,192,64,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(240,192,64,0.04) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse at center, black 20%, transparent 80%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(240,192,64,0.1);
+      border: 1px solid rgba(240,192,64,0.3);
+      color: var(--gold);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.4rem 1rem;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero h1 .gold {
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-dark));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      color: var(--text-dim);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      color: #0a0a0f;
+      border: none;
+      padding: 1rem 2.5rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary::before {
+      content:'';
+      position:absolute;
+      top:0; left:-100%;
+      width:100%; height:100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.4s;
+    }
+    .btn-primary:hover::before { left:100%; }
+    .btn-primary:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(240,192,64,0.4);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 1rem 2rem;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* STATS */
+    .stats-bar {
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    .stat {
+      text-align: center;
+      padding: 0.75rem;
+      border-right: 1px solid var(--border);
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: var(--gold);
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-top: 0.25rem;
+    }
+
+    /* SECTION */
+    .section {
+      padding: 5rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 0.05em;
+    }
+    .section-title span { color: var(--gold); }
+    .see-all {
+      color: var(--gold);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(240,192,64,0.3);
+      padding-bottom: 2px;
+      transition: border-color 0.2s;
+    }
+    .see-all:hover { border-color: var(--gold); }
+
+    /* CATEGORY TABS */
+    .tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+    .tab {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      padding: 0.5rem 1.25rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab:hover, .tab.active { 
+      background: rgba(240,192,64,0.1);
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    /* GAME GRID */
+    .game-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .game-card {
+      position: relative;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      aspect-ratio: 3/4;
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .game-card:hover { 
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5), 0 0 20px rgba(240,192,64,0.15);
+      border-color: rgba(240,192,64,0.4);
+    }
+    .game-thumb {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      position: relative;
+    }
+    .game-thumb-1 { background: linear-gradient(135deg, #1a0a2e, #2d1b69); }
+    .game-thumb-2 { background: linear-gradient(135deg, #0a1a0a, #1a4a1a); }
+    .game-thumb-3 { background: linear-gradient(135deg, #2e0a0a, #6a1a1a); }
+    .game-thumb-4 { background: linear-gradient(135deg, #0a1a2e, #1a3a6a); }
+    .game-thumb-5 { background: linear-gradient(135deg, #1a1a0a, #4a4a1a); }
+    .game-thumb-6 { background: linear-gradient(135deg, #1a0a1a, #4a1a4a); }
+    .game-thumb .icon {
+      font-size: 3.5rem;
+      font-family: 'Bebas Neue', sans-serif;
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 0.05em;
+    }
+    .game-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 50%);
+    }
+    .game-info {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 1rem 0.75rem 0.75rem;
+    }
+    .game-name {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.2rem;
+    }
+    .game-provider {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .game-badge {
+      position: absolute;
+      top: 0.5rem;
+      left: 0.5rem;
+      background: var(--accent);
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+    }
+    .game-play-btn {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.6);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .game-card:hover .game-play-btn { opacity: 1; }
+    .play-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(240,192,64,0.5);
+    }
+    .play-triangle {
+      width: 0;
+      height: 0;
+      border-left: 18px solid #0a0a0f;
+      border-top: 11px solid transparent;
+      border-bottom: 11px solid transparent;
+      margin-left: 4px;
+    }
+
+    /* PROMO BANNER */
+    .promo-section {
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem;
+    }
+    .promo-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+    .promo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .promo-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+    }
+    .promo-card::before {
+      content:'';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+    }
+    .promo-card:nth-child(2)::before { background: linear-gradient(90deg, var(--accent), #ff6b6b); }
+    .promo-card:nth-child(3)::before { background: linear-gradient(90deg, #4ecdc4, #44a08d); }
+    .promo-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 8px;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .promo-icon-1 { background: rgba(240,192,64,0.1); border: 1px solid rgba(240,192,64,0.2); }
+    .promo-icon-2 { background: rgba(230,57,70,0.1); border: 1px solid rgba(230,57,70,0.2); }
+    .promo-icon-3 { background: rgba(78,205,196,0.1); border: 1px solid rgba(78,205,196,0.2); }
+    .promo-icon svg { width: 24px; height: 24px; }
+    .promo-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.05em;
+    }
+    .promo-card:nth-child(1) .promo-amount { color: var(--gold); }
+    .promo-card:nth-child(2) .promo-amount { color: var(--accent); }
+    .promo-card:nth-child(3) .promo-amount { color: #4ecdc4; }
+    .promo-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .promo-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.6; }
+
+    /* PAYMENT */
+    .payment-strip {
+      background: var(--bg-dark);
+      padding: 2rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .payment-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      flex-wrap: wrap;
+    }
+    .payment-label {
+      font-size: 0.7rem;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .payment-logos {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .payment-logo {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.4rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--text-dim);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--bg-panel);
+      border-top: 1px solid var(--border);
+      padding: 3rem 2rem;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 3rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2rem;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1rem;
+    }
+    .footer-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.7; }
+    .footer-col-title {
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1.25rem;
+    }
+    .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .footer-links a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--text); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-copy { font-size: 0.72rem; color: var(--text-dim); }
+    .age-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.3rem 0.75rem;
+      border-radius: 3px;
+      letter-spacing: 0.05em;
+    }
+
+    /* ANIMATIONS */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(24px); }
+      to { opacity:1; transform: translateY(0); }
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% center; }
+      100% { background-position: 200% center; }
+    }
+    .shimmer {
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold-light), var(--gold-dark));
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 3s linear infinite;
+    }
+
+    /* LIVE TICKER */
+    .live-ticker {
+      background: rgba(230,57,70,0.08);
+      border: 1px solid rgba(230,57,70,0.2);
+      padding: 0.6rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      overflow: hidden;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity:1; transform: scale(1); }
+      50% { opacity:0.5; transform: scale(0.8); }
+    }
+    .ticker-text {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      animation: ticker 25s linear infinite;
+    }
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    .live-label {
+      font-size: 0.65rem;
+      font-weight: 900;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      nav { display:none; }
+      .stats-bar { grid-template-columns: repeat(2,1fr); }
+      .promo-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      .game-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">RIO<span>2</span></div>
+  <nav>
+    <a href="#">Casino</a>
+    <a href="#">Live</a>
+    <a href="#">Sports</a>
+    <a href="#">Slots</a>
+    <a href="#">Promotions</a>
+    <a href="#">VIP</a>
+  </nav>
+  <div class="header-btns">
+    <button class="btn-login">LOG IN</button>
+    <button class="btn-join">JOIN NOW</button>
+  </div>
+</header>
+
+<!-- LIVE TICKER -->
+<div class="live-ticker">
+  <div class="live-dot"></div>
+  <span class="live-label">LIVE</span>
+  <div class="ticker-text">
+    Winner: Kim*** won 1,250,000 KRW on Baccarat &nbsp;&nbsp;&bull;&nbsp;&nbsp; 
+    Lee*** won 870,000 KRW on Gates of Olympus &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    Park*** won 3,400,000 KRW on Roulette &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    Choi*** won 560,000 KRW on Sweet Bonanza &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    Jung*** won 2,100,000 KRW on Blackjack &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    Winner: Kim*** won 1,250,000 KRW on Baccarat &nbsp;&nbsp;&bull;&nbsp;&nbsp; 
+    Lee*** won 870,000 KRW on Gates of Olympus &nbsp;&nbsp;&bull;&nbsp;&nbsp;
+    Park*** won 3,400,000 KRW on Roulette
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Trusted Since 2020 &bull; Licensed & Secure</div>
+    <h1>
+      PLAY <span class="gold shimmer">BOLD</span><br>
+      WIN <span class="gold">BIG</span>
+    </h1>
+    <p>Experience the ultimate online casino destination. Thousands of games, live dealers, and exclusive bonuses await.</p>
+    <div class="hero-actions">
+      <button class="btn-primary">Start Playing Now</button>
+      <button class="btn-secondary">Explore Games</button>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat">
+    <div class="stat-num">5,000+</div>
+    <div class="stat-label">Games Available</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">24/7</div>
+    <div class="stat-label">Live Support</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">200%</div>
+    <div class="stat-label">Welcome Bonus</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">1M+</div>
+    <div class="stat-label">Active Players</div>
+  </div>
+</div>
+
+<!-- GAMES SECTION -->
+<div class="section">
+  <div class="section-header">
+    <div class="section-title">POPULAR <span>GAMES</span></div>
+    <a href="#" class="see-all">View All Games</a>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active">All Games</div>
+    <div class="tab">Slots</div>
+    <div class="tab">Live Casino</div>
+    <div class="tab">Table Games</div>
+    <div class="tab">New Arrivals</div>
+    <div class="tab">Hot</div>
+  </div>
+
+  <div class="game-grid">
+    <!-- Card 1 -->
+    <div class="game-card">
+      <div class="game-thumb game-thumb-1">
+        <div class="icon">SLOT</div>
+      </div>
+      <div class="game-overlay"></div>
+      <div class="game-badge">HOT</div>
+      <div class="game-info">
+        <div class="game-name">Gates of Olympus</div>
+        <div class="game-provider">Pragmatic Play</div>
+      </div>
+      <div class="game-play-btn">
+        <div class="play-circle"><div class="play-triangle"></div></div>
+      </div>
+    </div>
+    <!-- Card 2 -->
+    <div class="game-card">
+      <div class="game-thumb game-thumb-2">
+        <div class="icon">LIVE</div>
+      </div>
+      <div class="game-overlay"></div>
+      <div class="game-info">
+        <div class="game-name">Live Baccarat</div>
+        <div class="game-provider">Evolution</div>
+      </div>
+      <div class="game-play-btn">
+        <div class="play-circle"><div class="play-triangle"></div></div>
+      </div>
+    </div>
+    <!-- Card 3 -->
+    <div class="game-card">
+      <div class="game-thumb game-thumb-3">
+        <div class="icon">BONUS</div>
+      </div>
+      <div class="game-overlay"></div>
+      <div class="game-badge">NEW</div>
+      <div class="game-info">
+        <div class="game-name">Sweet Bonanza</div>
+        <div class="game-provider">Pragmatic Play</div>
+      </div>
+      <div class="game-play-btn">
+        <div class="play-circle"><div class="play-triangle"></div></div>
+      </div>
+    </div>
+    <!-- Card 4 -->
+    <div class="game-card">
+      <div class="game-thumb game-thumb-4">
+        <div class="icon">TABLE</div>
+      </div>
+      <div class="game-overlay"></div>
+      <div class="game-info">
+        <div class="game-name">Blackjack VIP</div>
+        <div class="game-provider">Evolution</div>
+      </div>
+      <div class="game-play-btn">
+        <div class="play-circle"><div class="play-triangle"></div></div>
+      </div>
+    </div>
+    <!-- Card 5 -->
+    <div class="game-card">
+      <div class="game-thumb game-thumb-5">
+        <div class="icon">SPIN</div>
+      </div>
+      <div class="game-overlay"></div>
+      <div class="game-badge">HOT</div>
+      <div class="game-info">
+        <div class="game-name">Book of Dead</div>
+        <div class="game-provider">Play'n GO</div>
+      </div>
+      <div class="game-play-btn">
+        <div class="play-circle"><div class="play-triangle"></div></div>
+      </div>
+    </div>
+    <!-- Card 6 -->
+    <div class="game-card">
+      <div class="game-thumb game-thumb-6">
+        <div class="icon">LIVE</div>
+      </div>
+      <div class="game-overlay"></div>
+      <div class="game-info">
+        <div class="game-name">Crazy Time</div>
+        <div class="game-provider">Evolution</div>
+      </div>
+      <div class="game-play-btn">
+        <div class="play-circle"><div class="play-triangle"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PROMOS -->
+<section class="promo-section">
+  <div class="promo-grid">
+    <div class="promo-card">
+      <div class="promo-icon promo-icon-1">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#f0c040" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="promo-amount">200%</div>
+      <div class="promo-title">Welcome Bonus</div>
+      <div class="promo-desc">Double your first deposit up to 500,000 KRW. Start your journey with more to play.</div>
+    </div>
+    <div class="promo-card">
+      <div class="promo-icon promo-icon-2">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#e63946" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <polyline points="12 6 12 12 16 14"/>
+        </svg>
+      </div>
+      <div class="promo-amount">DAILY</div>
+      <div class="promo-title">Daily Cashback</div>
+      <div class="promo-desc">Get up to 15% cashback on your daily losses. We've got you covered every day.</div>
+    </div>
+    <div class="promo-card">
+      <div class="promo-icon promo-icon-3">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#4ecdc4" stroke-width="2">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+      <div class="promo-amount">VIP</div>
+      <div class="promo-title">VIP Club</div>
+      <div class="promo-desc">Exclusive rewards, personal account manager, and special events for our top players.</div>
+    </div>
+  </div>
+</section>
+
+<!-- PAYMENT -->
+<div class="payment-strip">
+  <div class="payment-inner">
+    <span class="payment-label">Supported Payments</span>
+    <div class="payment-logos">
+      <span class="payment-logo">VISA</span>
+      <span class="payment-logo">MASTERCARD</span>
+      <span class="payment-logo">BITCOIN</span>
+      <span class="payment-logo">ETHEREUM</span>
+      <span class="payment-logo">USDT</span>
+      <span class="payment-logo">BANK TRANSFER</span>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo">CASINO</div>
+        <p class="footer-desc">Licensed and regulated online gaming platform. We are committed to responsible gaming and player safety. Must be 18+ to register.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Games</div>
+        <ul class="footer-links">
+          <li><a href="#">Slots</a></li>
+          <li><a href="#">Live Casino</a></li>
+          <li><a href="#">Table Games</a></li>
+          <li><a href="#">Sports</a></li>
+          <li><a href="#">Virtual Sports</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Account</div>
+        <ul class="footer-links">
+          <li><a href="#">Register</a></li>
+          <li><a href="#">Login</a></li>
+          <li><a href="#">Promotions</a></li>
+          <li><a href="#">VIP Club</a></li>
+          <li><a href="#">Referral</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Live Chat</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Responsible Gaming</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">&copy; 2026 Casino. All rights reserved. Gambling can be addictive. Play responsibly.</span>
+      <span class="age-badge">18+</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Tab switching
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+    });
+  });
+
+  // Scroll animation
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.game-card, .promo-card, .stat').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+</script>
+</body>
+</html>
